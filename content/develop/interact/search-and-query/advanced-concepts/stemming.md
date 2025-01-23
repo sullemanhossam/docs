@@ -15,8 +15,6 @@ title: Stemming
 weight: 10
 ---
 
-# Stemming and Multi-language Support
-
 RediSearch supports stemming - that is adding the base form of a word to the index. This allows the query for "`hiring`" to also return results for "`hire`" and "`hired`", for example.
 
 The current stemming support is based on the Snowball stemmer library, which supports most European languages, as well as Arabic and other. See the "[Supported languages](#supported-languages)" section below. We hope to include more languages soon (if you need a specific language support, please open an issue).
@@ -56,7 +54,7 @@ redis> HSET wort:4 wort stucke
 
 **Searching for a common stem**
 
-Search for "stuck" (german for "piece"). It's only necessary to specify the `LANGUAGE` argument when it wasn't specified to create the index being used to search.
+Search for "stuck" (german for "piece"). As of v2.10, it's only necessary to specify the `LANGUAGE` argument when it wasn't specified to create the index being used to search.
 Note the results for words that contains "`ü`" are encoded in UTF-8.
 
 {{< highlight bash >}}

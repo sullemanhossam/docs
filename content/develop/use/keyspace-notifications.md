@@ -26,7 +26,7 @@ Examples of events that can be received are:
 * All the keys receiving an LPUSH operation.
 * All the keys expiring in the database 0.
 
-Note: Redis Pub/Sub is *fire and forget* that is, if your Pub/Sub client disconnects,
+Note: Redis Pub/Sub is *fire and forget*; that is, if your Pub/Sub client disconnects,
 and reconnects later, all the events delivered during the time the client was
 disconnected are lost.
 
@@ -101,7 +101,7 @@ Different commands generate different kind of events according to the following 
 * [`DEL`]({{< relref "/commands/del" >}}) generates a `del` event for every deleted key.
 * [`EXPIRE`]({{< relref "/commands/expire" >}}) and all its variants ([`PEXPIRE`]({{< relref "/commands/pexpire" >}}), [`EXPIREAT`]({{< relref "/commands/expireat" >}}), [`PEXPIREAT`]({{< relref "/commands/pexpireat" >}})) generate an `expire` event when called with a positive timeout (or a future timestamp). Note that when these commands are called with a negative timeout value or timestamp in the past, the key is deleted and only a `del` event is generated instead.
 * [`HDEL`]({{< relref "/commands/hdel" >}}) generates a single `hdel` event, and an additional `del` event if the resulting hash is empty and the key is removed.
-* [`HEXPIRE`]({{< relref "/commands/hexpire" >}}) and all its variants ([`HEXPIREAT`]({{< relref "/commands/hpexpireat" >}}), [`HPEXPIRE`]({{< relref "/commands/hpexpire" >}}), [`HPEXPIREAT`]({{< relref "/commands/hpexpireat" >}})) generate `hexpire` events.
+* [`HEXPIRE`]({{< relref "/commands/hexpire" >}}) and all its variants ([`HEXPIREAT`]({{< relref "/commands/hpexpireat" >}}), [`HPEXPIRE`]({{< relref "/commands/hpexpire" >}}), [`HPEXPIREAT`]({{< relref "/commands/hpexpireat" >}})) generate `hexpire` events. Furthermore, `hexpired` events are generated when fields expire.
 * [`HINCRBYFLOAT`]({{< relref "/commands/hincrbyfloat" >}}) generates an `hincrbyfloat` event.
 * [`HINCRBY`]({{< relref "/commands/hincrby" >}}) generates an `hincrby` event.
 * [`HPERSIST`]({{< relref "/commands/hpersist" >}}) generates an `hpersist` event.

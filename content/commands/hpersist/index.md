@@ -1,6 +1,6 @@
 ---
 acl_categories:
-- '@read'
+- '@write'
 - '@hash'
 - '@fast'
 arguments:
@@ -8,14 +8,18 @@ arguments:
   key_spec_index: 0
   name: key
   type: key
-- display_text: numfields
-  name: numfields
-  type: integer
-- display_text: field
-  multiple: true
-  name: field
-  type: string
-arity: -4
+- arguments:
+  - display_text: numfields
+    name: numfields
+    type: integer
+  - display_text: field
+    multiple: true
+    name: field
+    type: string
+  name: fields
+  token: FIELDS
+  type: block
+arity: -5
 categories:
 - docs
 - develop
@@ -27,15 +31,14 @@ categories:
 - kubernetes
 - clients
 command_flags:
-- readonly
+- write
 - fast
-complexity: O(N) where N is the number of arguments to the command
+complexity: O(N) where N is the number of specified fields
 description: Removes the expiration time for each specified field
 group: hash
 hidden: false
 key_specs:
-- RO: true
-  access: true
+- RW: true
   begin_search:
     spec:
       index: 1
@@ -46,11 +49,12 @@ key_specs:
       lastkey: 0
       limit: 0
     type: range
+  update: true
 linkTitle: HPERSIST
 since: 7.4.0
 summary: Removes the expiration time for each specified field
-syntax_fmt: HPERSIST key FIELDS numfields field [field ...]
-syntax_str: FIELDS numfields field [field ...]
+syntax_fmt: "HPERSIST key FIELDS\_numfields field [field ...]"
+syntax_str: "FIELDS\_numfields field [field ...]"
 title: HPERSIST
 ---
 Remove the existing expiration on a hash key's field(s), turning the field(s) from _volatile_ (a field
@@ -75,11 +79,3 @@ redis> HTTL mykey FIELDS 2 field1 field2
 2) (integer) -1
 ```
 
-## RESP2/RESP3 replies
-
-One of the following:
-* Empty [Array reply]({{< relref "/develop/reference/protocol-spec" >}}#arrays) if the provided key does not exist.
-* [Array reply]({{< relref "/develop/reference/protocol-spec" >}}#arrays). For each field:
-    - [Integer reply]({{< relref "/develop/reference/protocol-spec" >}}#integers): `-2` if no such field exists in the provided hash key.
-    - [Integer reply]({{< relref "/develop/reference/protocol-spec" >}}#integers): `-1` if the field exists but has no associated expiration set.
-    - [Integer reply]({{< relref "/develop/reference/protocol-spec" >}}#integers): `1` the expiration was removed.

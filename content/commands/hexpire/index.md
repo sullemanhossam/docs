@@ -31,14 +31,18 @@ arguments:
   name: condition
   optional: true
   type: oneof
-- display_text: numfields
-  name: numfields
-  type: integer
-- display_text: field
-  multiple: true
-  name: field
-  type: string
-arity: -5
+- arguments:
+  - display_text: numfields
+    name: numfields
+    type: integer
+  - display_text: field
+    multiple: true
+    name: field
+    type: string
+  name: fields
+  token: FIELDS
+  type: block
+arity: -6
 categories:
 - docs
 - develop
@@ -53,7 +57,7 @@ command_flags:
 - write
 - denyoom
 - fast
-complexity: O(N) where N is the number of arguments to the command
+complexity: O(N) where N is the number of specified fields
 description: Set expiration for hash fields using relative time to expire (seconds)
 group: hash
 hidden: false
@@ -72,9 +76,10 @@ key_specs:
   update: true
 linkTitle: HEXPIRE
 since: 7.4.0
-summary: Set expiration for hash fields using relative time to expire in seconds
-syntax_fmt: "HEXPIRE key seconds [NX | XX | GT | LT] FIELDS numfields\n\ \ field [field ...]"
-syntax_str: seconds [NX | XX | GT | LT] FIELDS numfields field [field ...]
+summary: Set expiry for hash field using relative time to expire (seconds)
+syntax_fmt: "HEXPIRE key seconds [NX | XX | GT | LT] FIELDS\_numfields field\n  [field\
+  \ ...]"
+syntax_str: "seconds [NX | XX | GT | LT] FIELDS\_numfields field [field ...]"
 title: HEXPIRE
 ---
 Set an expiration (TTL or time to live) on one or more fields of a given hash key. You must specify at least one field.
@@ -123,15 +128,3 @@ redis> HGETALL mykey
 (empty array)
 ```
 
-## RESP2/RESP3 replies
-
-One of the following:
-* [Array reply](../../develop/reference/protocol-spec#arrays). For each field:
-    - [Integer reply](../../develop/reference/protocol-spec#integers): `-2` if no such field exists in the provided hash key.
-    - [Integer reply](../../develop/reference/protocol-spec#integers): `0` if the specified NX | XX | GT | LT condition has not been met.
-    - [Integer reply](../../develop/reference/protocol-spec#integers): `1` if the expiration time was set/updated.
-    - [Integer reply](../../develop/reference/protocol-spec#integers): `2` when `HEXPIRE`/`HPEXPIRE` is called with 0 seconds/milliseconds or when `HEXPIREAT`/`HPEXPIREAT` is called with a past Unix time in seconds/milliseconds.
-* [Simple error reply](../../develop/reference/protocol-spec#simple-errors):
-    - if parsing failed, mandatory arguments are missing, unknown arguments are specified, or argument values are of the wrong type or out of range.
-    - if the provided key exists but is not a hash.
-* Empty [Array reply](../../develop/reference/protocol-spec#arrays) if the provided key does not exist.

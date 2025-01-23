@@ -8,14 +8,18 @@ arguments:
   key_spec_index: 0
   name: key
   type: key
-- display_text: numfields
-  name: numfields
-  type: integer
-- display_text: field
-  multiple: true
-  name: field
-  type: string
-arity: -4
+- arguments:
+  - display_text: numfields
+    name: numfields
+    type: integer
+  - display_text: field
+    multiple: true
+    name: field
+    type: string
+  name: fields
+  token: FIELDS
+  type: block
+arity: -5
 categories:
 - docs
 - develop
@@ -29,7 +33,7 @@ categories:
 command_flags:
 - readonly
 - fast
-complexity: O(N) where N is the number of arguments to the command
+complexity: O(N) where N is the number of specified fields
 description: Returns the TTL in seconds of a hash field.
 group: hash
 hidden: false
@@ -48,9 +52,9 @@ key_specs:
     type: range
 linkTitle: HTTL
 since: 7.4.0
-summary: Returns the TTL of each specified field in seconds
-syntax_fmt: HTTL key numfields field [field ...]
-syntax_str: numfields field [field ...]
+summary: Returns the TTL in seconds of a hash field.
+syntax_fmt: "HTTL key FIELDS\_numfields field [field ...]"
+syntax_str: "FIELDS\_numfields field [field ...]"
 title: HTTL
 ---
 Returns the remaining TTL (time to live) of a hash key's field(s) that have a set expiration.
@@ -62,24 +66,16 @@ See also the [`HPTTL`]({{< relref "/commands/hpttl" >}}) command that returns th
 ## Example
 
 ```
-redis> HTTL no-key 10 3 field1 field2 field3
+redis> HTTL no-key FIELDS 3 field1 field2 field3
 (nil)
 redis> HSET mykey field1 "hello" field2 "world"
 (integer) 2
-redis> HEXPIRE mykey 300 2 field1 field3
+redis> HEXPIRE mykey 300 FIELDS 2 field1 field3
 1) (integer) 1
 2) (integer) -2
-redis> HTTL mykey 3 field1 field2 field3
+redis> HTTL mykey FIELDS 3 field1 field2 field3
 1) (integer) 283
 2) (integer) -1
 3) (integer) -2
 ```
 
-## RESP2/RESP3 replies
-
-One of the following:
-* Empty [Array reply]({{< relref "/develop/reference/protocol-spec" >}}#arrays) if the provided key does not exist.
-* [Array reply]({{< relref "/develop/reference/protocol-spec" >}}#arrays). For each field:
-    - [Integer reply]({{< relref "/develop/reference/protocol-spec" >}}#integers): `-2` if no such field exists in the provided hash key.
-    - [Integer reply]({{< relref "/develop/reference/protocol-spec" >}}#integers): `-1` if the field exists but has no associated expiration set.
-    - [Integer reply]({{< relref "/develop/reference/protocol-spec" >}}#integers): the TTL in seconds.

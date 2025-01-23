@@ -3,8 +3,8 @@ name: Publish Container to GHCR
 on:
   push:
     branches:
-      - main  # Trigger on pushes to the main branch
-  workflow_dispatch: # Allow manual triggering of the workflow
+      - main
+  workflow_dispatch: # Allow manual triggering
 
 jobs:
   build-and-push:
@@ -23,17 +23,20 @@ jobs:
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
 
-      # Step 3: Extract and build image from docker-compose.yml
+      # Step 3: Build and push Docker image
       - name: Build and push Docker image
         run: |
-          # Extract the image name and service from the docker-compose file
+          # Define the GHCR image name
           IMAGE_NAME="ghcr.io/${{ github.repository_owner }}/${{ github.repository }}:latest"
-          
-          # Build the service defined in docker-compose.yml
+
+          # Build the Docker Compose service
           docker compose build
-          
+
+          # Get the built image ID for the service
+          IMAGE_ID=$(docker compose images --quiet <service-name>)
+
           # Tag the image for GHCR
-          docker compose images --quiet | xargs -I {} docker tag {} "$IMAGE_NAME"
-          
-          # Push the image to GHCR
+          docker tag "$IMAGE_ID" "$IMAGE_NAME"
+
+          # Push the tagged image to GHCR
           docker push "$IMAGE_NAME"

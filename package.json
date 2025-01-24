@@ -5,7 +5,7 @@
     "build": "make all"
   },
   "dependencies": {
-    "hugo-bin": "^0.112.5",
+    "hugo": "*",
     "npm": "*"
   },
   "devDependencies": {

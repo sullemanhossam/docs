@@ -24,6 +24,6 @@ pip3 install -r requirements.txt
 
 # Build the Hugo site
 echo "Building the Hugo site..."
-hugo --minify
+hugo --minify -d dist
 
 echo "Setup complete!"

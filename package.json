@@ -4,6 +4,10 @@
     "serve": "make serve",
     "build": "make all"
   },
+  "dependencies": {
+    "hugo-bin": "^0.112.5",
+    "npm": "^latest"
+  },
   "devDependencies": {
     "@tailwindcss/typography": "^0.5.2",
     "autoprefixer": "^10.4.7",

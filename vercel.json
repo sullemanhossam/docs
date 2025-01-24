@@ -1,0 +1,12 @@
+{
+  "version": 2,
+  "builds": [
+    {
+      "src": "build.sh",
+      "use": "@vercel/static-build"
+    }
+  ],
+  "env": {
+    "HUGO_VERSION": "0.111.2"
+  }
+}
